@@ -1,6 +1,7 @@
 #!usr/bin/python
 import os
 import json
+from enum import Enum
 from typing import Optional
 
 import requests
@@ -31,10 +32,23 @@ headers = {
 }
 
 
+class PropertyType(str, Enum):
+    builder_floor = 'builder_floor'
+    apartment = 'apartment'
+    plot = 'plot'
+    land = 'land'
+    office_space = 'office_space'
+
+
+class ListingType(str, Enum):
+    sale = 'sale'
+    rent = 'rent'
+
+
 class ListingData(BaseModel):
-    property_type: str
+    property_type: PropertyType
     keywords: str
-    listing_type: str
+    listing_type: ListingType
     project: str
     block: str
     locality: str
