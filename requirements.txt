@@ -1,0 +1,6 @@
+fastapi
+python-multipart
+gunicorn
+uvicorn
+requests
+Babel
