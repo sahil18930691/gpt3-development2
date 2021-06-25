@@ -50,7 +50,7 @@ class ListingData(BaseModel):
     keywords: str
     listing_type: ListingType
     project: str
-    block: str
+    tower: str
     locality: str
     city: str
     furnishing: str
@@ -73,7 +73,7 @@ async def root():
     return "Hello World"
 
 
-@app.get('/descriptions')
+@app.post('/descriptions')
 async def generate_listing_description(listing_data: ListingData):
     """
     Generates property descriptions for the given listing data in request body
@@ -87,7 +87,6 @@ async def generate_listing_description(listing_data: ListingData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
     
-    print(data)
     description = data['choices'][0]['text'].strip()
     return description
 
