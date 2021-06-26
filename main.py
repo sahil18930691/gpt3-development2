@@ -1,71 +1,17 @@
-#!usr/bin/python
-import os
-import json
-from enum import Enum
-from typing import Optional
-
-import requests
+#!/usr/bin/python
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 
-from prompts import create_prompt
+from prompts import generate_description
+from models.property_types import (
+    ApartmentListingData,
+    BuilderFloorListingData,
+    LandListingData,
+    OfficeSpaceListingData,
+    PlotListingData
+)
+
 
 app = FastAPI()
-
-
-BASE_PAYLOAD = {
-    "max_tokens": 150,
-    "temperature": 0.5,
-    "top_p": 0.8,
-    "n": 1,
-    "stream": False,
-    "logprobs": None,
-    "stop": ["-----"]
-}
-
-API_KEY = os.getenv('API_KEY')
-MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
-
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {API_KEY}"
-}
-
-
-class PropertyType(str, Enum):
-    builder_floor = 'builder_floor'
-    apartment = 'apartment'
-    plot = 'plot'
-    land = 'land'
-    office_space = 'office_space'
-
-
-class ListingType(str, Enum):
-    sale = 'sale'
-    rent = 'rent'
-
-
-class ListingData(BaseModel):
-    property_type: PropertyType
-    keywords: str
-    listing_type: ListingType
-    project: str
-    tower: str
-    locality: str
-    city: str
-    furnishing: str
-    price: int
-    bedrooms: int
-    bathrooms: int
-    parking: Optional[int]
-    area: int
-    area_unit: str
-    facing: str
-    property_age: str
-    floor_number: int
-    total_floor_count: int
-    amenities: str
-
 
 
 @app.get("/")
@@ -73,20 +19,42 @@ async def root():
     return "Hello World"
 
 
-@app.post('/descriptions')
-async def generate_listing_description(listing_data: ListingData):
+@app.post('/apartment_descriptions')
+async def generate_apartment_description(apartment_listing_data: ApartmentListingData):
     """
-    Generates property descriptions for the given listing data in request body
+    Generates descriptions for properties of type Apartment
     """
-    payload = dict(BASE_PAYLOAD)
-    payload['prompt'] = create_prompt(listing_data)
-    
-    try:
-        response = requests.post(MODEL_ENDPOINT, headers=headers, data=json.dumps(payload))
-        data = response.json()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
-    
-    description = data['choices'][0]['text'].strip()
-    return description
+    return generate_description(apartment_listing_data)
+
+
+@app.post('/builder_floor_descriptions')
+async def generate_builder_floor_description(builder_floor_listing_data: BuilderFloorListingData):
+    """
+    Generates descriptions for properties of type Builder Floor
+    """
+    return dict(builder_floor_listing_data)
+
+
+@app.post('/land_descriptions')
+async def generate_apartment_description(land_listing_data: LandListingData):
+    """
+    Generates descriptions for properties of type Land
+    """
+    return generate_description(land_listing_data)
+
+
+@app.post('/office_space_descriptions')
+async def generate_apartment_description(office_space_listing_data: OfficeSpaceListingData):
+    """
+    Generates descriptions for properties of type Apartment
+    """
+    return generate_description(office_space_listing_data)
+
+
+@app.post('/plot_descriptions')
+async def generate_apartment_description(plot_listing_data: PlotListingData):
+    """
+    Generates descriptions for properties of type Apartment
+    """
+    return generate_description(plot_listing_data)
 

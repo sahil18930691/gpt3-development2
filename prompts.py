@@ -1,18 +1,62 @@
-#!usr/bin/python
+#!/usr/bin/python
+import os
 import json
+import requests
 
 from babel.numbers import format_currency
+from fastapi import HTTPException
 
 
-def get_examples(property_type, listing_type=None):
+API_KEY = os.getenv('API_KEY')
+MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
+
+BASE_PAYLOAD = {
+    "max_tokens": 150,
+    "temperature": 0.5,
+    "top_p": 0.8,
+    "n": 1,
+    "stream": False,
+    "logprobs": None,
+    "stop": ["-----"]
+}
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {API_KEY}"
+}
+
+
+def generate_description(listing_data):
+    """
+    Generates a description for any type of BaseListingData
+    """
+    payload = dict(BASE_PAYLOAD)
+    payload['prompt'] = create_prompt(listing_data)
+    
+    try:
+        response = requests.post(MODEL_ENDPOINT, headers=headers, data=json.dumps(payload))
+        data = response.json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
+    
+    description = data['choices'][0]['text'].strip()
+    return description
+
+
+def get_examples(property_type, listing_type):
     """
     Get all the examples from the JSON file for the specified
     property_type and listing_type
     """
-    if listing_type is None:
+    if os.path.isfile(f'prompts/{property_type}.json'):
         json_path = f'prompts/{property_type}.json'
-    else:
+    elif os.path.isfile(f'prompts/{property_type}_{listing_type}.json'):
         json_path = f'prompts/{property_type}_{listing_type}.json'
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Listing of {listing_type} with {property_type} is not supported"
+        )
     with open(json_path, 'rb') as json_file:
         examples = json.loads(json_file.read())
     return examples
@@ -23,6 +67,8 @@ def format_listing_data(listing_data):
     Formats the examples for usage in the prompt
     """
     prompt_string = ""
+    if 'listing_type' in listing_data:
+        prompt_string += f"Listing type:"
     if 'keywords' in listing_data:
         prompt_string += f"Keywords: {listing_data['keywords']}\n"
 
@@ -40,12 +86,21 @@ def format_listing_data(listing_data):
 
     if "furnishing" in listing_data:
         prompt_string += f"Furnishing: {listing_data['furnishing']}\n"
+    
+    if "office_space_type" in listing_data:
+        prompt_string += f"Office fitting: {listing_data['office_space_type']}\n"
 
     if "bedrooms" in listing_data:
         prompt_string += f"Bedrooms: {listing_data['bedrooms']}\n"
 
     if "bathrooms" in listing_data:
         prompt_string += f"Bathrooms: {listing_data['bathrooms']}\n"
+    
+    if "pantry" in listing_data:
+        prompt_string += f"Pantry: {listing_data['pantry']}\n"
+    
+    if "washroom_present" in listing_data:
+        prompt_string += f"Washroom Present: {listing_data['washroom_present']}\n"
 
     if "parking" in listing_data:
         prompt_string += f"Parking: {listing_data['parking']}\n"
@@ -62,6 +117,12 @@ def format_listing_data(listing_data):
     
     if "property_age" in listing_data:
         prompt_string += f"Property Age: {listing_data['property_age']}\n"
+
+    if "land_number" in listing_data:
+        prompt_string += f"Land Number: {listing_data['land_number']}\n"
+    
+    if "plot_number" in listing_data:
+        prompt_string += f"Plot Number: {listing_data['plot_number']}\n"
     
     if "floor_number" in listing_data:
         prompt_string += f"Floor number: {listing_data['floor_number']}\n"
@@ -70,7 +131,7 @@ def format_listing_data(listing_data):
         prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
 
     if "amenities" in listing_data:
-        prompt_string += f"Amenities: {listing_data['amenities']}"
+        prompt_string += f"Amenities: {listing_data['amenities']}\n"
 
     if "description" in listing_data:
         prompt_string += f"Description: {listing_data['description']}\n"
