@@ -32,7 +32,7 @@ async def generate_builder_floor_description(builder_floor_listing_data: Builder
     """
     Generates descriptions for properties of type Builder Floor
     """
-    return dict(builder_floor_listing_data)
+    return generate_description(builder_floor_listing_data)
 
 
 @app.post('/land_descriptions')
