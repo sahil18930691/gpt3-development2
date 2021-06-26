@@ -46,7 +46,7 @@ async def generate_apartment_description(land_listing_data: LandListingData):
 @app.post('/office_space_descriptions')
 async def generate_apartment_description(office_space_listing_data: OfficeSpaceListingData):
     """
-    Generates descriptions for properties of type Apartment
+    Generates descriptions for properties of type Office Space
     """
     return generate_description(office_space_listing_data)
 
@@ -54,7 +54,7 @@ async def generate_apartment_description(office_space_listing_data: OfficeSpaceL
 @app.post('/plot_descriptions')
 async def generate_apartment_description(plot_listing_data: PlotListingData):
     """
-    Generates descriptions for properties of type Apartment
+    Generates descriptions for properties of type Plot
     """
     return generate_description(plot_listing_data)
 
