@@ -26,7 +26,7 @@ headers = {
 }
 
 
-def generate_description(listing_data):
+def generate_description(listing_data, format=False):
     """
     Generates a description for any type of BaseListingData
     """
@@ -40,6 +40,9 @@ def generate_description(listing_data):
         raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
     
     description = data['choices'][0]['text'].strip()
+    if format:
+        description = format_description(description)
+
     return description
 
 
@@ -109,8 +112,9 @@ def format_listing_data(listing_data):
         formatted_price = format_currency(listing_data['price'], 'INR', locale='en_IN')[1:].split('.')[0]
         prompt_string += f"Price: {formatted_price}\n"
     
+    # Concatenate area and area_unit and remove full stops, if any
     if "area" in listing_data:
-        prompt_string += f"Area: {listing_data['area']} {listing_data['area_unit']}\n"
+        prompt_string += f"Area: {listing_data['area']} {listing_data['area_unit'].replace('.', '')}\n"
     
     if "facing" in listing_data:
         prompt_string += f"Facing: {listing_data['facing']}\n"
@@ -154,3 +158,18 @@ def create_prompt(listing_form_data):
     prompt_string += format_listing_data(listing_data)
     prompt_string += 'Description: '
     return prompt_string
+
+
+def format_description(description):
+    """
+    Breaks descriptions into sentences and the creates format with first paragraph,
+    body (bullet points array) and last paragraph
+    """
+    sentences = list(map(str.strip, description.split('.')[:-1]))
+    sentences = [f'{sentence}.' for sentence in sentences]
+    formatted_description = {
+        'first_paragraph': sentences[0],
+        'body': sentences[1:-1],
+        'last_paragraph': sentences[-1]
+    }
+    return formatted_description
