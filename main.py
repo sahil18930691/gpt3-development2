@@ -61,24 +61,26 @@ async def generate_plot_description(plot_listing_data: PlotListingData, format: 
     """
     return generate_description(plot_listing_data, format=format)
 
+
 @app.post('/villa_descriptions')
 async def generate_villa_description(villa_listing_data: VillaListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Villa
     """
     return generate_description(villa_listing_data, format=format)
+
 
 @app.post('/penthouse_descriptions')
 async def generate_penthouse_description(penthouse_listing_data: PenthouseListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Penthouse
     """
     return generate_description(penthouse_listing_data, format=format)
+
 
 @app.post('/independent_house_descriptions')
 async def generate_independent_house_description(independent_house_listing_data: IndependentHouseListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Independent House
     """
     return generate_description(independent_house_listing_data, format=format)
-
