@@ -11,6 +11,9 @@ class PropertyType(str, Enum):
     land = 'land'
     office_space = 'office_space'
     plot = 'plot'
+    penthouse = 'penthouse'
+    villa = 'villa'
+    independent_house = 'independent_house'
 
 
 class ListingType(str, Enum):
@@ -40,6 +43,39 @@ class ApartmentListingData(BaseListingData):
     property_age: str
     floor_number: int
     total_floor_count: int
+
+
+class PenthouseListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'penthouse'
+    furnishing: str
+    bedrooms: int
+    bathrooms: int
+    parking: Optional[int]
+    property_age: str
+    floor_number: int
+    total_floor_count: int    
+
+
+class VillaListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'villa'
+    area_type: Optional[str]
+    furnishing: str
+    bedrooms: int
+    bathrooms: int
+    parking: Optional[int]
+    property_age: str
+    total_floor_count: int   
+
+
+class IndependentHouseListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'independent_house'
+    area_type: Optional[str]
+    furnishing: str
+    bedrooms: int
+    bathrooms: int
+    parking: Optional[int]
+    property_age: str
+    total_floor_count: int   
 
 
 class BuilderFloorListingData(BaseListingData):
