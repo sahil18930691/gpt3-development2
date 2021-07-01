@@ -12,7 +12,7 @@ from models.property_types import (
     PenthouseListingData,
     IndependentHouseListingData,
     IndustrialPlotListingData,
-    OfficeSpaceInItSezListingData,
+    OfficeSpaceSezListingData,
     ShopListingData,
     ShowroomListingData,
     WarehouseListingData
@@ -89,29 +89,28 @@ async def generate_independent_house_description(independent_house_listing_data:
     Generates descriptions for properties of type Independent House
     """
     return generate_description(independent_house_listing_data, format=format)
-<<<<<<< HEAD
 
 
 @app.post('/industrial_plot_descriptions')
 async def generate_industrial_plot_description(industrial_plot_listing_data: IndustrialPlotListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Industrial Plot
     """
     return generate_description(industrial_plot_listing_data, format=format)
 
 
-@app.post('/office_space_in_it_sez_descriptions')
-async def generate_office_space_in_it_sez_description(office_space_in_it_sez_listing_data: OfficeSpaceInItSezListingData, format: bool = False):
+@app.post('/office_space_sez_descriptions')
+async def generate_office_space_sez_description(office_space_sez_listing_data: OfficeSpaceSezListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Office Space SEZ
     """
-    return generate_description(office_space_in_it_sez_listing_data, format=format)
+    return generate_description(office_space_sez_listing_data, format=format)
 
 
 @app.post('/shop_descriptions')
 async def generate_shop_description(shop_listing_data: ShopListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Shop
     """
     return generate_description(shop_listing_data, format=format)
 
@@ -119,15 +118,14 @@ async def generate_shop_description(shop_listing_data: ShopListingData, format: 
 @app.post('/showroom_descriptions')
 async def generate_showroom_description(showroom_listing_data: ShowroomListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Showroom
     """
     return generate_description(showroom_listing_data, format=format)    
+
 
 @app.post('/warehouse_descriptions')
 async def generate_warehouse_description(warehouse_listing_data: WarehouseListingData, format: bool = False):
     """
-    Generates descriptions for properties of type Plot
+    Generates descriptions for properties of type Warehouse
     """
     return generate_description(warehouse_listing_data, format=format)    
-=======
->>>>>>> 938509559a751d40eebcdcc0e7eafb1ea09758b6

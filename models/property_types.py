@@ -122,8 +122,8 @@ class IndustrialPlotListingData(BaseListingData):
     plot_number: int
 
 
-class OfficeSpaceInItSezListingData(BaseListingData):
-    property_type: Optional[PropertyType] = 'office_space_in_it_sez'
+class OfficeSpaceSezListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'office_space_sez'
     office_space_type: str
     pantry: str
     furnishing: str
@@ -139,12 +139,14 @@ class ShopListingData(BaseListingData):
     parking: Optional[int]
     floor_number: int
 
+
 class ShowroomListingData(BaseListingData):
     property_type: Optional[PropertyType] = 'showroom'
     furnishing: str
     washroom_present: str
     parking: Optional[int]
     floor_number: int
+
 
 class WarehouseListingData(BaseListingData):
     property_type: Optional[PropertyType] = 'warehouse'
