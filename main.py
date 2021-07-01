@@ -10,7 +10,12 @@ from models.property_types import (
     PlotListingData,
     VillaListingData,
     PenthouseListingData,
-    IndependentHouseListingData
+    IndependentHouseListingData,
+    IndustrialPlotListingData,
+    OfficeSpaceInItSezListingData,
+    ShopListingData,
+    ShowroomListingData,
+    WarehouseListingData
 )
 
 
@@ -82,3 +87,41 @@ async def generate_independent_house_description(independent_house_listing_data:
     """
     return generate_description(independent_house_listing_data, format=format)
 
+
+@app.post('/industrial_plot_descriptions')
+async def generate_industrial_plot_description(industrial_plot_listing_data: IndustrialPlotListingData, format: bool = False):
+    """
+    Generates descriptions for properties of type Plot
+    """
+    return generate_description(industrial_plot_listing_data, format=format)
+
+
+@app.post('/office_space_in_it_sez_descriptions')
+async def generate_office_space_in_it_sez_description(office_space_in_it_sez_listing_data: OfficeSpaceInItSezListingData, format: bool = False):
+    """
+    Generates descriptions for properties of type Plot
+    """
+    return generate_description(office_space_in_it_sez_listing_data, format=format)
+
+
+@app.post('/shop_descriptions')
+async def generate_shop_description(shop_listing_data: ShopListingData, format: bool = False):
+    """
+    Generates descriptions for properties of type Plot
+    """
+    return generate_description(shop_listing_data, format=format)
+
+
+@app.post('/showroom_descriptions')
+async def generate_showroom_description(showroom_listing_data: ShowroomListingData, format: bool = False):
+    """
+    Generates descriptions for properties of type Plot
+    """
+    return generate_description(showroom_listing_data, format=format)    
+
+@app.post('/warehouse_descriptions')
+async def generate_warehouse_description(warehouse_listing_data: WarehouseListingData, format: bool = False):
+    """
+    Generates descriptions for properties of type Plot
+    """
+    return generate_description(warehouse_listing_data, format=format)    

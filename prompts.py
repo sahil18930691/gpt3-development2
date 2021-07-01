@@ -2,13 +2,16 @@
 import os
 import json
 import requests
+import choices
 
 from babel.numbers import format_currency
 from fastapi import HTTPException
 
 
+
 API_KEY = os.getenv('API_KEY')
 MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
+
 
 BASE_PAYLOAD = {
     "max_tokens": 150,
@@ -38,7 +41,7 @@ def generate_description(listing_data, format=False):
         data = response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
-    
+ 
     description = data['choices'][0]['text'].strip()
     if format:
         description = format_description(description)

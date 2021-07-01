@@ -14,6 +14,11 @@ class PropertyType(str, Enum):
     penthouse = 'penthouse'
     villa = 'villa'
     independent_house = 'independent_house'
+    industrial_plot = 'industrial_plot'
+    office_space_in_it_sez = 'office_space_in_it_sez'
+    shop = 'shop'
+    showroom = 'showroom'
+    warehouse = 'warehouse'
 
 
 class ListingType(str, Enum):
@@ -110,3 +115,38 @@ class OfficeSpaceListingData(BaseListingData):
 class PlotListingData(BaseListingData):
     property_type: Optional[PropertyType] = 'plot'
     plot_number: int
+
+
+class IndustrialPlotListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'industrial_plot'
+    plot_number: int
+
+
+class OfficeSpaceInItSezListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'office_space_in_it_sez'
+    office_space_type: str
+    pantry: str
+    furnishing: str
+    washroom_present: str
+    parking: Optional[int]
+    floor_number: int
+    total_floor_count: int
+
+class ShopListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'shop'
+    furnishing: str
+    washroom_present: str
+    parking: Optional[int]
+    floor_number: int
+
+class ShowroomListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'showroom'
+    furnishing: str
+    washroom_present: str
+    parking: Optional[int]
+    floor_number: int
+
+class WarehouseListingData(BaseListingData):
+    property_type: Optional[PropertyType] = 'warehouse'
+    washroom_present: str
+    parking: int
