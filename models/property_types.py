@@ -58,7 +58,7 @@ class PenthouseListingData(BaseListingData):
     parking: Optional[int]
     property_age: str
     floor_number: int
-    total_floor_count: int    
+    total_floor_count: int
 
 
 class VillaListingData(BaseListingData):
@@ -69,7 +69,7 @@ class VillaListingData(BaseListingData):
     bathrooms: int
     parking: Optional[int]
     property_age: str
-    total_floor_count: int   
+    total_floor_count: int
 
 
 class IndependentHouseListingData(BaseListingData):
@@ -80,7 +80,7 @@ class IndependentHouseListingData(BaseListingData):
     bathrooms: int
     parking: Optional[int]
     property_age: str
-    total_floor_count: int   
+    total_floor_count: int
 
 
 class BuilderFloorListingData(BaseListingData):
