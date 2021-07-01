@@ -53,7 +53,7 @@
   },
   {
     "listing_type": "rent",
-    "keywords": "compelling, prime, investment, public transportation,  offices, workspaces",
+    "keywords": "compelling, prime, investment, public transportation, offices, workspaces",
     "city": "Delhi",
     "locality": "Dwarka",
     "area": 242,
@@ -61,8 +61,8 @@
     "price": 725000,
     "land_number": 253,
     "facing": "south",
-    "amenities": "Large Green Area, Restaurant, Pre-School",
-    "description": "A 242 square yard land is available at a compelling rental price of Rs 7,25,000 in a prime location of Delhi. This represents a wonderful investment opportunity for the future, particularly in terms of appreciation potential. The land is located at Dwarka, one of Delhi's most popular localities, this locality is close to public transportation. This is an south facing land that is numbered 253. It includes amenities such as Large Green Area, Restaurant and Pre-School."
+    "amenities": "large green area, restaurant, pre-school",
+    "description": "A 242 square yard land is available at a compelling rental price of Rs 7,25,000 in a prime location of Delhi. This represents a wonderful investment opportunity for the future, particularly in terms of appreciation potential. The land is located at Dwarka, one of Delhi's most popular localities, this locality is close to public transportation. This is an south facing land that is numbered 253. It includes amenities such as large green area, restaurant and pre-school."
   },
   {
     "listing_type": "rent",
