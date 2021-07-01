@@ -2,11 +2,9 @@
 import os
 import json
 import requests
-import choices
 
 from babel.numbers import format_currency
 from fastapi import HTTPException
-
 
 
 API_KEY = os.getenv('API_KEY')
@@ -74,7 +72,8 @@ def format_listing_data(listing_data):
     """
     prompt_string = ""
     if 'listing_type' in listing_data:
-        prompt_string += f"Listing type:"
+        prompt_string += f"Listing type: {listing_data['listing_type']}\n"
+
     if 'keywords' in listing_data:
         prompt_string += f"Keywords: {listing_data['keywords']}\n"
 
