@@ -9,7 +9,11 @@ from models.property_types import (
     CommercialListingData
 )
 
-app = FastAPI()
+app = FastAPI(
+    title="Minite GPT3",
+    description="Generates description for real estate listings from the listing parameters",
+    version="1.0.1"
+)
 
 
 @app.get("/")
