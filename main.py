@@ -5,6 +5,7 @@ from prompts import generate_description
 from models.property_types import (
     ResidentialListingData,
     LandListingData,
+    OfficeSpaceListingData,
     CommercialListingData
 )
 
@@ -30,6 +31,14 @@ async def land_description(land_listing_data: LandListingData, format: bool = Fa
     Generates descriptions for land property types
     """
     return generate_description(land_listing_data, format=format)
+
+
+@app.post('/office_space_descriptions')
+async def office_space_description(office_space_data: OfficeSpaceListingData, format: bool = False):
+    """
+    Generates descriptions for office space property types
+    """
+    return generate_description(office_space_data, format=format)
 
 
 @app.post('/commercial_descriptions')

@@ -34,9 +34,12 @@ class ResidentialPropertyType(str, Enum):
     independent_house = 'independent_house'
 
 
-class CommercialPropertyType(str, Enum):
+class OfficeSpacePropertyType(str, Enum):
     office_space = 'office_space'
     office_space_sez = 'office_space_sez'
+
+
+class CommercialPropertyType(str, Enum):
     shop = 'shop'
     showroom = 'showroom'
     warehouse = 'warehouse'
@@ -80,12 +83,20 @@ class LandListingData(BaseListingData):
     plot_number: int
 
 
-class CommercialListingData(BaseListingData):
-    property_type: CommercialPropertyType
+class OfficeSpaceListingData(BaseListingData):
+    property_type: OfficeSpacePropertyType
     office_space_type: str
     pantry: str
+    furnishing: str
+    washroom_present: str
+    parking: Optional[int]
+    floor_number: int
+    total_floor_count: int
+
+
+class CommercialListingData(BaseListingData):
+    property_type: CommercialPropertyType
     furnishing: Optional[str]
     washroom_present: str
-    parking: int
+    parking: Optional[int]
     floor_number: Optional[int]
-    total_floor_count: Optional[int]
