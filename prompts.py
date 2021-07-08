@@ -158,7 +158,7 @@ def create_prompt(listing_form_data):
         prompt_string += "\n\n-----\n\n"
 
     prompt_string += format_listing_data(listing_data)
-    prompt_string += 'Description: '
+    prompt_string += 'Description:'
     return prompt_string
 
 
