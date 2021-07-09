@@ -14,6 +14,8 @@ ADD . /home/SQRYDS
 
 USER SQRYDS
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["sh", "run.sh"]
+ENV PORT="${PORT:-8080}"
+
+CMD gunicorn main:app --bind 0.0.0.0:$PORT -k uvicorn.workers.UvicornWorker
