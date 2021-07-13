@@ -54,14 +54,14 @@ class LandPropertyType(str, Enum):
 class BaseListingData(BaseModel):
     property_type: PropertyType
     listing_type: ListingType
-    keywords: str
+    keywords: Optional[str]
     locality: str
     city: str
     price: int
     area: int
     area_unit: str
-    facing: str
-    amenities: str
+    facing: Optional[str]
+    amenities: Optional[str]
 
 
 class ResidentialListingData(BaseListingData):
@@ -79,7 +79,7 @@ class ResidentialListingData(BaseListingData):
 
 class LandListingData(BaseListingData):
     property_type: LandPropertyType
-    plot_number: str
+    plot_number: Optional[str]
 
 
 class OfficeSpaceListingData(BaseListingData):
