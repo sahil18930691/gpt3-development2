@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from fastapi import FastAPI, HTTPException
-
 from prompts import generate_description
 from models.property_types import (
     ResidentialListingData,
@@ -8,6 +7,7 @@ from models.property_types import (
     OfficeSpaceListingData,
     CommercialListingData
 )
+
 
 app = FastAPI(
     title="Minite GPT3",
@@ -51,3 +51,5 @@ async def generate_land_description(commercial_listing_data: CommercialListingDa
     Generates descriptions for commercial property types
     """
     return generate_description(commercial_listing_data, format=format)
+
+

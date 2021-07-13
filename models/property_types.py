@@ -79,7 +79,6 @@ class ResidentialListingData(BaseListingData):
 
 class LandListingData(BaseListingData):
     property_type: LandPropertyType
-    land_number: Optional[int]
     plot_number: int
 
 

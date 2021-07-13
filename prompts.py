@@ -2,13 +2,13 @@
 import os
 import json
 import requests
-
 from babel.numbers import format_currency
 from fastapi import HTTPException
 
 
 API_KEY = os.getenv('API_KEY')
 MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
+
 
 
 BASE_PAYLOAD = {
@@ -39,8 +39,9 @@ def generate_description(listing_data, format=False):
         data = response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
- 
+    
     description = data['choices'][0]['text'].strip()
+    
     if format:
         description = format_description(description)
 
@@ -123,9 +124,6 @@ def format_listing_data(listing_data):
     
     if "property_age" in listing_data:
         prompt_string += f"Property Age: {listing_data['property_age']}\n"
-
-    if "land_number" in listing_data:
-        prompt_string += f"Land Number: {listing_data['land_number']}\n"
     
     if "plot_number" in listing_data:
         prompt_string += f"Plot Number: {listing_data['plot_number']}\n"
