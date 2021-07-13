@@ -79,7 +79,7 @@ class ResidentialListingData(BaseListingData):
 
 class LandListingData(BaseListingData):
     property_type: LandPropertyType
-    plot_number: int
+    plot_number: str
 
 
 class OfficeSpaceListingData(BaseListingData):
