@@ -12,7 +12,7 @@ MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
 
 
 BASE_PAYLOAD = {
-    "max_tokens": 150,
+    "max_tokens": 300,
     "temperature": 0.5,
     "top_p": 0.8,
     "n": 1,
