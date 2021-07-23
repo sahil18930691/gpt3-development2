@@ -1,21 +1,26 @@
-FROM python:3.6-alpine
+FROM python:3.8
 
-RUN adduser -S SQRYDS
+# RUN adduser -S SQRYRDS
+
+RUN useradd -m SQRYRDS
 
 ENV PYTHONUNBUFFERED 0
 
-ADD requirements.txt /home/SQRYDS
+ADD requirements.txt /home/SQRYRDS
 
-WORKDIR /home/SQRYDS
+WORKDIR /home/SQRYRDS
 
-RUN pip install --upgrade pip && pip install --trusted-host pypi.python.org -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --trusted-host pypi.python.org -r requirements.txt && \
+    python -m spacy download en_core_web_sm
 
-ADD . /home/SQRYDS
+ADD . /home/SQRYRDS
 
-USER SQRYDS
+USER SQRYRDS
 
 EXPOSE 8080
 
 ENV PORT="${PORT:-8080}"
 
-CMD gunicorn main:app --bind 0.0.0.0:$PORT -k uvicorn.workers.UvicornWorker
+CMD gunicorn main:app --bind 0.0.0.0:$PORT --workers=2 --threads 4 --timeout 60 -k uvicorn.workers.UvicornWorker
+# CMD uvicorn main:app --port 8080

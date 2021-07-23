@@ -1,21 +1,32 @@
 #!/usr/bin/python
 import os
+import re
 import json
 import requests
-from babel.numbers import format_currency
-from fastapi import HTTPException
 
+from dotenv import load_dotenv
+from fastapi import HTTPException
+from nltk.stem import PorterStemmer
+from babel.numbers import format_currency
+
+from matchers import nlp
+
+
+# loading environment variables from .env file
+load_dotenv()
 
 API_KEY = os.getenv('API_KEY')
 MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
-
-
+DESCRIPTION_SCORE_THRESHOLD = 1.15
+TOKEN_THRESHOLD = 15
+HIT_ITERATIONS_THRESHOLD = 3
+NUM_EXAMPLES = 2
 
 BASE_PAYLOAD = {
     "max_tokens": 300,
     "temperature": 0.5,
     "top_p": 0.8,
-    "n": 1,
+    "n": NUM_EXAMPLES,
     "stream": False,
     "logprobs": None,
     "stop": ["-----"]
@@ -26,22 +37,101 @@ headers = {
     "Authorization": f"Bearer {API_KEY}"
 }
 
+ps = PorterStemmer()
 
-def generate_description(listing_data, format=False):
+def get_tokens(sentence_):
     """
-    Generates a description for any type of BaseListingData
+    Function to tokenize the input sentence.
     """
-    payload = dict(BASE_PAYLOAD)
-    payload['prompt'] = create_prompt(listing_data)
-    
+    sentence_ = f"{sentence_}".lower().strip()
+    sentence_ = sentence_.replace("-", " ")
+    sentence_ = re.sub(" +", " ", sentence_)
+    doc = nlp(sentence_)
+    tokens = []
+    for token in doc:
+        cur = token.lemma_
+        try:
+            cur = str(int(replace_nth(cur)))
+        except:
+            pass
+        cur = re.sub(r"[()\"/;:<>{}`+=~|!?']", "", cur)
+        cur = re.sub(r"[.,']", " ", cur)
+        cur = re.sub(" +", " ", cur)
+        digit_to_eng = cur.replace("1", "one")\
+                            .replace("2", "two")\
+                            .replace("3", "three")\
+                            .replace("4", "four")\
+                            .replace("5", "five")\
+                            .replace("6", "six")\
+                            .replace("7", "seven")\
+                            .replace("8", "eight")\
+                            .replace("9", "nine")\
+                            .replace("0", "zero")
+
+        if len(digit_to_eng) == len(cur) and len(cur.strip()) >=2:
+            tokens.append(ps.stem(cur))
+        else:
+            tokens.append(digit_to_eng)
+
+    return tokens
+
+def get_description_scores(data, keywords):
+    """
+    Calculates the scores for a list of descriptions.
+    """
+    scores = []
+    for idx in range(len(data['choices'])):
+        description = data['choices'][idx]['text'].strip()
+        description_keywords_list = get_tokens(description)
+        description_keywords_set = set(description_keywords_list)
+        common_keywords_set = keywords.intersection(description_keywords_set)
+        score_ = (len(common_keywords_set) / len(keywords)) +\
+                 (len(description_keywords_set) / len(description_keywords_list)) 
+        scores.append(score_)
+
+    return scores
+
+def hit_gpt_api(payload):
+    """
+    Function that sends a post request to GPT-3 API
+    """
     try:
         response = requests.post(MODEL_ENDPOINT, headers=headers, data=json.dumps(payload))
         data = response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
+
+    return data
+
+def generate_description(listing_data, format=False):
+    """
+    Generates a description for any type of BaseListingData
+    """
+
+    listing_data_dict = dict(listing_data)
+    keywords = []
+    for key, vals in listing_data_dict.items():
+        token_list = get_tokens(vals)
+        keywords.extend(token_list)
+
+    payload = dict(BASE_PAYLOAD)
+    payload['prompt'] = create_prompt(listing_data)
     
-    description = data['choices'][0]['text'].strip()
-    
+    data = hit_gpt_api(payload)
+    description_scores = get_description_scores(data, set(keywords))
+
+    max_score = max(description_scores)
+    description = data['choices'][description_scores.index(max_score)]['text'].strip()
+
+    hit_iterations = 1
+    while hit_iterations < HIT_ITERATIONS_THRESHOLD and len(get_tokens(description)) < TOKEN_THRESHOLD and max_score < DESCRIPTION_SCORE_THRESHOLD:
+        print("Again hitting the API", TOKEN_THRESHOLD, DESCRIPTION_SCORE_THRESHOLD)
+        data = hit_gpt_api(payload)
+        description_scores = get_description_scores(data, set(keywords))
+
+        max_score = max(description_scores)
+        description = data['choices'][description_scores.index(max_score)]['text'].strip()
+
     if format:
         description = format_description(description)
 
