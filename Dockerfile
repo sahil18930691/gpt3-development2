@@ -20,4 +20,4 @@ EXPOSE 8080
 
 ENV PORT="${PORT:-8080}"
 
-CMD gunicorn main:app --bind 0.0.0.0:$PORT --workers=2 --threads 4 --timeout 60 -k uvicorn.workers.UvicornWorker
+CMD gunicorn main:app --bind 0.0.0.0:$PORT --workers=3 --threads 4 --timeout 60 -k uvicorn.workers.UvicornWorker
