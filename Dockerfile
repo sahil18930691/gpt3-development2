@@ -1,7 +1,5 @@
 FROM python:3.8
 
-# RUN adduser -S SQRYRDS
-
 RUN useradd -m SQRYRDS
 
 ENV PYTHONUNBUFFERED 0
@@ -23,4 +21,3 @@ EXPOSE 8080
 ENV PORT="${PORT:-8080}"
 
 CMD gunicorn main:app --bind 0.0.0.0:$PORT --workers=2 --threads 4 --timeout 60 -k uvicorn.workers.UvicornWorker
-# CMD uvicorn main:app --port 8080

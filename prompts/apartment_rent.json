@@ -7,15 +7,15 @@
     "area_unit": "square feet",
     "price": 25000,
     "furnishing": "semi-furnished",
-    "bedrooms": 1,
+    "bedrooms": 25,
     "property_age": "10 years",
-    "bathrooms": 2,
-    "parking": 1,
+    "bathrooms": 19,
+    "parking": 7,
     "facing": "garden",
-    "floor_number": 2,
-    "total_floor_count": 4,
+    "floor_number": 30,
+    "total_floor_count": 40,
     "amenities": "cycling cum jogging track, playing zone for children, large green zone and 24 hour security",
-    "description": "A stylishly designed flat is available with 516 square feet of space and a rental rate of Rs 25,000 which is quite affordable. You will get 1 bedroom at the apartment along with 2 bathrooms as well, and 1 parking making it suitable for a small family, working bachelor or female only. The prime location of Goregaon West in Mumbai is a key USP for the property since it is located close to public transportation in a safe & secure neighborhood. This is a garden facing apartment with a nice view on the second floor of a four-storied building and is 10+ years old while being semi-furnished. Community amenities include a cycling cum jogging track, playing zone for children, large green zone and 24 hour security."
+    "description": "A stylishly designed flat is available with 516 square feet of space and a rental rate of Rs 25,000 which is quite affordable. You will get 25 bedroom at the apartment along with 19 bathrooms as well, and 7 parking making it suitable for a small family, working bachelor or female only. The prime location of Goregaon West in Mumbai is a key USP for the property since it is located close to public transportation in a safe & secure neighborhood. This is a garden facing apartment with a nice view on the 30th floor of a 40 storied building and is 10+ years old while being semi-furnished. Community amenities include a cycling cum jogging track, playing zone for children, large green zone and 24 hour security."
   },
   {
     "keywords": "spacious, prime, competitive, family, public transportation",
@@ -43,15 +43,15 @@
     "area_unit": "square feet",
     "price": 500001,
     "furnishing": "furnished",
-    "bedrooms": 2,
+    "bedrooms": 47,
     "property_age": "2-4 years",
-    "bathrooms": 2,
-    "parking": 1,
+    "bathrooms": 24,
+    "parking": 16,
     "facing": "west",
-    "floor_number": 14,
+    "floor_number": 10,
     "total_floor_count": 21,
     "amenities": "power backup, 24 hour security services, medical facilities",
-    "description": "Providing 650 square feet of space, this apartment comes for a breakthrough rental rate of Rs 5,00,001. This stylishly designed and well-ventilated apartment comes with 2 bedrooms, 2 bathrooms and a parking facility, being ideal for a family. The prime location of sector 100, Noida is a big plus point for this property since it is close to public transportation. 2-4 years old, this property faces the west while offering a nice view to residents on the 14th floor of a 21-storied building. It is furnished for maximum comfort. You can expect power backup and 24 hour security services for the apartment along with medical facilities."
+    "description": "Providing 650 square feet of space, this apartment comes for a breakthrough rental rate of Rs 5,00,001. This stylishly designed and well-ventilated apartment comes with 47 bedrooms, 24 bathrooms and 16 parking facility, being ideal for a family. The prime location of sector 100, Noida is a big plus point for this property since it is close to public transportation. 2-4 years old, this property faces the west while offering a nice view to residents on the 10th floor of a 21 storied building. It is furnished for maximum comfort. You can expect power backup and 24 hour security services for the apartment along with medical facilities."
   },
   {
     "keywords": "stylishly, families, bachelors, safe & secure",
@@ -61,14 +61,14 @@
     "area_unit": "square feet",
     "price": 33500,
     "furnishing": "unfurnished",
-    "bedrooms": 3,
+    "bedrooms": 11,
     "property_age": "2-4 years",
-    "bathrooms": 3,
+    "bathrooms": 7,
     "parking": 2,
     "facing": "northeast",
-    "floor_number": 6,
-    "total_floor_count": 7,
+    "floor_number": 26,
+    "total_floor_count": 37,
     "amenities": "24 hour security, badminton court, inbuilt wardrobes, clubhouse, central air conditioning, central wi-fi, concierge desk, food court, conference room, gymnasium, home automation and swimming pool",
-    "description": "Offering 1800 square feet of area, this stylishly designed apartment available for rent at a breakthrough rate of Rs 33,500. You can enjoy 3 spacious bedrooms, 3 bathrooms and 2 parking spaces ideally suitable for families and bachelors in this apartment. The apartment lies along the vital Bannerghatta Road in Bangalore which is a safe & secure locality. This unfurnished and northeast facing property is 2-4 years old. Total numbers of floors in the building is 7 and the flat lies on the 6th floor. Some of the best amenities include 24 hour security, badminton court, inbuilt wardrobes, clubhouse, central air conditioning, central Wi-Fi, concierge desk, food court, conference room, gymnasium, home automation and swimming pool among many others."
+    "description": "Offering 1800 square feet of area, this stylishly designed apartment available for rent at a breakthrough rate of Rs 33,500. You can enjoy 11 spacious bedrooms, 7 bathrooms and 2 parking spaces ideally suitable for families and bachelors in this apartment. The apartment lies along the vital Bannerghatta Road in Bangalore which is a safe & secure locality. This unfurnished and northeast facing property is 2-4 years old. Total numbers of floors in the building is 37 and the flat lies on the 26th floor. Some of the best amenities include 24 hour security, badminton court, inbuilt wardrobes, clubhouse, central air conditioning, central Wi-Fi, concierge desk, food court, conference room, gymnasium, home automation and swimming pool among many others."
   }
 ]
