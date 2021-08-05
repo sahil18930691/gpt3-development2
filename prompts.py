@@ -361,7 +361,7 @@ def format_description(description):
     Breaks descriptions into sentences and the creates format with first paragraph,
     body (bullet points array) and last paragraph
     """
-    sentences = list(map(str.strip, description.re.split("(?<!\d)\.(?!\d)")[:-1]))
+    sentences = list(map(str.strip, description.split('(?<!\d)\.(?!\d)')[:-1]))
     sentences = [f'{sentence}.' for sentence in sentences]
     formatted_description = {
         'first_paragraph': sentences[0],
