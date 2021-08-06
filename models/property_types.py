@@ -72,7 +72,7 @@ class ResidentialListingData(BaseListingData):
     bathrooms: str
     parking: str
     property_age: Optional[str]
-    floor_number: str
+    floor_number: int
     total_floor_count: str
 
 

@@ -325,6 +325,7 @@ def format_listing_data(listing_data):
         prompt_string += f"Plot Number: {listing_data['plot_number']}\n"
     
     if "floor_number" in listing_data:
+        if listing_data["floor_number"] != 0
         prompt_string += f"Floor Number: {listing_data['floor_number']}\n"        
             
     if "total_floor_count" in listing_data:
