@@ -330,7 +330,7 @@ def format_listing_data(listing_data):
     
     if "floor_number" in listing_data:
         if listing_data["floor_number"] == 0:
-            prompt_string += f"Floor number: {"parking is not mentioned"]}\n"
+            prompt_string += f"Floor number: {"parking is not mentioned"}\n"
             
             
     if "total_floor_count" in listing_data:
