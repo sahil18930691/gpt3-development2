@@ -329,13 +329,13 @@ def format_listing_data(listing_data):
         prompt_string += f"Plot Number: {listing_data['plot_number']}\n"
     
     if "floor_number" in listing_data:
-        if listing_data["floor_number"] == 0:
-            prompt_string += f"Floor number: {"parking is not mentioned"}\n"
+        if listing_data["floor_number"] == 0: 
+            prompt_string += f"Floor number: {1}\n"
             
             
     if "total_floor_count" in listing_data:
         if listing_data["total_floor_count"] == 0:
-            listing_data["total_floor_count"] == ""
+            listing_data["total_floor_count"] == 1
         prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
 
     if "amenities" in listing_data:
