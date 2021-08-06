@@ -69,11 +69,11 @@ class ResidentialListingData(BaseListingData):
     furnishing: str
     project: Optional[str]
     bedrooms: int
-    bathrooms: int
-    parking: int
+    bathrooms: str
+    parking: str
     property_age: Optional[str]
-    floor_number: int
-    total_floor_count: int
+    floor_number: str
+    total_floor_count: str
 
 
 class LandListingData(BaseListingData):
