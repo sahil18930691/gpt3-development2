@@ -336,7 +336,7 @@ def format_listing_data(listing_data):
     if "total_floor_count" in listing_data:
         if listing_data["total_floor_count"] == 0:
             listing_data["total_floor_count"] == 1
-        prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
+            prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
 
     if "amenities" in listing_data:
         prompt_string += f"Amenities: {listing_data['amenities']}\n"
