@@ -345,7 +345,7 @@ def format_listing_data(listing_data):
         prompt_string += f"Description: {listing_data['description']}\n"
 
     return prompt_string
-
+print(prompt_string)
 
 def create_prompt(listing_form_data):
     """
