@@ -296,6 +296,8 @@ def format_listing_data(listing_data):
         prompt_string += f"Bedrooms: {listing_data['bedrooms']}\n"
 
     if "bathrooms" in listing_data:
+        if listing_data['bathrooms'] == 0:
+            listing_data['bathrooms'] == ""
         prompt_string += f"Bathrooms: {listing_data['bathrooms']}\n"
     
     if "pantry" in listing_data:
@@ -305,6 +307,8 @@ def format_listing_data(listing_data):
         prompt_string += f"Washroom Present: {listing_data['washroom_present']}\n"
 
     if "parking" in listing_data:
+        if listing_data["parking"] == 0:
+            listing_data["parking"] == ""
         prompt_string += f"Parking: {listing_data['parking']}\n"
     
     if "price" in listing_data:
@@ -325,9 +329,13 @@ def format_listing_data(listing_data):
         prompt_string += f"Plot Number: {listing_data['plot_number']}\n"
     
     if "floor_number" in listing_data:
+        if listing_data["floor_number"] == 0:
+            listing_data["floor_number"] == ""
         prompt_string += f"Floor number: {listing_data['floor_number']}\n"
     
     if "total_floor_count" in listing_data:
+        if listing_data["total_floor_count"] == 0:
+            listing_data["total_floor_count"] == ""
         prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
 
     if "amenities" in listing_data:
