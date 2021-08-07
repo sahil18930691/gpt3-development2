@@ -69,11 +69,11 @@ class ResidentialListingData(BaseListingData):
     furnishing: str
     project: Optional[str]
     bedrooms: int
-    bathrooms: str
-    parking: str
+    bathrooms: int
+    parking: int
     property_age: Optional[str]
     floor_number: int
-    total_floor_count: str
+    total_floor_count: int
 
 
 class LandListingData(BaseListingData):
@@ -87,14 +87,14 @@ class OfficeSpaceListingData(BaseListingData):
     pantry: str
     furnishing: str
     washroom_present: str
-    parking: Optional[str]
-    floor_number: Optional[str]
-    total_floor_count: Optional[str]
+    parking: Optional[int]
+    floor_number: Optional[int]
+    total_floor_count: Optional[int]
 
 
 class CommercialListingData(BaseListingData):
     property_type: CommercialPropertyType
     furnishing: Optional[str]
     washroom_present: str
-    parking: Optional[str]
-    floor_number: Optional[str]
+    parking: Optional[int]
+    floor_number: Optional[int]
