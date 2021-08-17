@@ -10,3 +10,4 @@ x.py
 Property_dump.csv
 prop_description_scores.csv
 *.csv
+*.log

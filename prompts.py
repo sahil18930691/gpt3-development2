@@ -2,26 +2,31 @@
 import os
 import re
 import json
-import requests
 
-from dotenv import load_dotenv
 from fastapi import HTTPException
-from nltk.stem import PorterStemmer
 from babel.numbers import format_currency
 
-from matchers import nlp
+from utils import logger, hit_gpt_api
+from text_processing import get_tokens,\
+                            get_scores,\
+                            get_best_description,\
+                            encode_description_to_preserve_some_tokens,\
+                            remove_encodings,\
+                            fix_description,\
+                            fix_furnish
 
-# loading environment variables from .env file
-load_dotenv()
 
-API_KEY = os.getenv('API_KEY')
-MODEL_ENDPOINT = os.getenv('MODEL_ENDPOINT')
-TOKEN_COVERAGE_THRESHOLD = 0.35
-UNIQUE_TOKEN_THRESHOLD = 0.43
-TOKEN_THRESHOLD = 15
+TOKEN_COVERAGE_THRESHOLD = 0.40
+# After this many iterations. No fixing will be done.
+# This is done to avoid infinite loops.
+FIXING_ITERATIONS = 30
+# Number of times the program is going to hit GPT-3 in case the 
+# returned descriptions are not up to the mark.
 API_HIT_ITERATIONS_THRESHOLD = 2
+# Number of descriptions to be returned by GPT-3 in each request.
 NUM_EXAMPLES = 2
 
+# GPT-3 payload.
 BASE_PAYLOAD = {
     "max_tokens": 300,
     "temperature": 0.5,
@@ -32,174 +37,15 @@ BASE_PAYLOAD = {
     "stop": ["-----"]
 }
 
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {API_KEY}"
-}
 
-ps = PorterStemmer()
-
-
-def get_tokens(sentence_):
+async def generate_description(listing_data, format=False):
     """
-    Function to tokenize the input sentence.
-    """
-    sentence_ = f"{sentence_}".lower().strip()
-    sentence_ = sentence_.replace("-", " ")
-    sentence_ = re.sub(" +", " ", sentence_)
-    doc = nlp(sentence_)
-    tokens = []
-    for token in doc:
-        cur = token.lemma_
-        try:
-            cur = str(int(replace_nth(cur)))
-        except:
-            pass
-        cur = re.sub(r"[()\"/;:<>{}`+=~|!?']", "", cur)
-        cur = re.sub(r"[.,']", " ", cur)
-        cur = re.sub(" +", " ", cur)
-        digit_to_eng = cur.replace("1", "one")\
-                            .replace("2", "two")\
-                            .replace("3", "three")\
-                            .replace("4", "four")\
-                            .replace("5", "five")\
-                            .replace("6", "six")\
-                            .replace("7", "seven")\
-                            .replace("8", "eight")\
-                            .replace("9", "nine")\
-                            .replace("0", "zero")
-
-        if len(digit_to_eng) == len(cur) and len(cur.strip()) >=2:
-            tokens.append(ps.stem(cur))
-        else:
-            tokens.append(digit_to_eng)
-
-    return tokens
-
-
-def get_description_scores(data, keywords):
-    """
-    Calculates the scores for a list of descriptions.
-    """
-    scores = []
-    for idx in range(len(data['choices'])):
-        description = data['choices'][idx]['text'].strip()
-        description_keywords_list = get_tokens(description)
-        description_keywords_set = set(description_keywords_list)
-        common_keywords_set = keywords.intersection(description_keywords_set)
-        s1 = 0
-        s2 = 0
-        if len(keywords) > 0:
-            s1 = len(common_keywords_set) / len(keywords)
-        if len(description_keywords_list) > 0:
-            s2 = len(description_keywords_set) / len(description_keywords_list)
-        score_ =  s1 + s2
-
-        scores.append(score_)
-
-    return scores
-
-
-def remove_duplicate_sentences(description):
-    try:
-        sents = description.split(".")
-
-        sent_dict = {}
-        for sent in sents:
-            sent_dict[sent] = "."
-
-        new_sents = []
-        for k, _ in sent_dict.items():
-            new_sents.append(k)
-
-        return_val = ".".join(new_sents)
-        return return_val, return_val
-    except Exception as e:
-        print(e)
-        print(description)
-        
-    return description, description
-
-
-def get_scores(data, keywords):
-    scores_token_coverage = []
-    scores_unique_tokens = []
-    for idx in range(len(data['choices'])):
-        description = data['choices'][idx]['text'].strip()
-        if description.count(":") >= 3 and (("description:" in description.lower()) or ("description :" in description.lower())):
-            try:
-                description = description[description.lower().rindex("description")+len("description"):]
-                if ":" in description:
-                    try:
-                        idx_ = description.lower().find(":")
-                        if idx_ != -1:
-                            description = description[:idx_]
-                            try:
-                                description = description[:description.lower().rindex(" ")]
-                            except:
-                                pass
-                    except:
-                        pass
-                description = description.replace(":", "").strip()
-            except:
-                pass
-            data['choices'][idx]['text'] = description
-
-        description, data['choices'][idx]['text'] = remove_duplicate_sentences(description)
-
-        description_keywords_list = get_tokens(description)
-        description_keywords_set = set(description_keywords_list)
-        common_keywords_set = keywords.intersection(description_keywords_set)
-        s1 = 0
-        s2 = 0
-        if len(keywords) > 0:
-            s1 = len(common_keywords_set) / len(keywords)
-        if len(description_keywords_list) > 0:
-            s2 = len(description_keywords_set) / len(description_keywords_list)
-        scores_token_coverage.append(s1)
-        scores_unique_tokens.append(s2)
-
-    scores = [(y, x, idx) for y, x, idx in sorted(zip(scores_token_coverage,\
-                                                        scores_unique_tokens,\
-                                                        list(range(len(scores_unique_tokens)))),\
-                                                        key=lambda pair: pair[0])]
-
-    return scores
-
-
-def get_best_description(data, description_scores):
-    correct_description_found = False
-    description = None
-    for i in range(len(description_scores)-1, -1, -1):
-        cur_description = data['choices'][description_scores[i][2]]['text'].strip()
-        if description_scores[i][1] >= UNIQUE_TOKEN_THRESHOLD and\
-             len(get_tokens(cur_description)) >= TOKEN_THRESHOLD and\
-             cur_description.count(":") <= 3:
-            description = cur_description
-            correct_description_found = True 
-            return description, correct_description_found, description_scores[i][1], description_scores[i][0]
-
-    max_coverage= max(description_scores, key=lambda x:x[1])
-    description = data['choices'][max_coverage[2]]['text'].strip()
-    return description, correct_description_found, max_coverage[1], max_coverage[0]
-
-
-def hit_gpt_api(payload):
-    """
-    Function that sends a post request to GPT-3 API
-    """
-    try:
-        response = requests.post(MODEL_ENDPOINT, headers=headers, data=json.dumps(payload))
-        data = response.json()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Request to remote server failed: {str(e)}")
-
-    return data
-
-
-def generate_description(listing_data, format=False):
-    """
-    Generates a description for any type of BaseListingData
+    Generates a description for any type of BaseListingData.
+    Steps:
+        1. Hit the API
+        2. Find best description from returned description using scoring.
+        3. If description is acceptable then return it.
+        4. If it is not acceptable. Repeat steps 1-3 certain number of times before giving up.
     """
 
     listing_data_dict = dict(listing_data)
@@ -211,39 +57,76 @@ def generate_description(listing_data, format=False):
     payload = dict(BASE_PAYLOAD)
     payload['prompt'] = create_prompt(listing_data)
     
-    data = hit_gpt_api(payload)
-    description_scores = get_scores(data, set(keywords))
+    data = await hit_gpt_api(payload)
+    description_scores, data = get_scores(data, set(keywords))
     # for i in range(len(description_scores)):
     #     print(data["choices"][description_scores[i][2]]["text"])
     #     print(description_scores[i][0], description_scores[i][1])
     #     print("--xx--")
     description = None
+
     description, correct_description_found, unique_token_score, token_coverage_score = get_best_description(data, description_scores)
 
+    # Again hit the GPT-3 API in case we don't get a satisfactory description.
     hit_iterations = 1
     while hit_iterations < API_HIT_ITERATIONS_THRESHOLD and correct_description_found == False:
-        new_data = hit_gpt_api(payload)
+        new_data = await hit_gpt_api(payload)
 
         for new_description in new_data['choices']:
             data['choices'].append(new_description)
-        description_scores = get_scores(data, set(keywords))
-
-        # for i in range(len(description_scores)):
-        #     print(data["choices"][description_scores[i][2]]["text"])
-        #     print(description_scores[i][0], description_scores[i][1])
-        #     print("--xx--")
+        description_scores, data = get_scores(data, set(keywords))
 
         description, correct_description_found, unique_token_score, token_coverage_score = get_best_description(data, description_scores)
         hit_iterations += 1
 
+    # Return error if we API is unable to find description.
     if correct_description_found == False and token_coverage_score < TOKEN_COVERAGE_THRESHOLD:
-        print(description, correct_description_found, unique_token_score, token_coverage_score)
+        logger.info("-------->>  Failed for prompt: \n"+str(payload['prompt']))
+        logger.info("========>> Best description for failed prompt: \n"+str(description))
         raise HTTPException(status_code=500, detail="Could not generate the description for the given input.")
 
-    if format:
-        description = format_description(description)
+    # if format:
+    #     description = format_description(description)
 
-    return description
+    description_copy = description
+    try:
+        cnt = 0
+        modified = True
+        while modified and cnt < FIXING_ITERATIONS:
+            cnt += 1
+            description_copy = re.sub(" +", " ", description_copy)
+            description_copy, modified = encode_description_to_preserve_some_tokens(description_copy)
+        
+        description_copy = description_copy.replace("-", " ")
+        description_copy = remove_encodings(description_copy)
+        description_copy = description_copy.replace("bhk", " bhk")\
+                                            .replace(" rs.", " rs ")
+    except:
+        pass
+
+    try:
+        description_copy = re.sub(" +", " ", description_copy)
+        modified = True
+        cnt = 0
+        print(description_copy)
+        while modified and cnt < FIXING_ITERATIONS:
+            cnt += 1
+            description_copy, modified = fix_description(description_copy, listing_data)
+    except:
+        pass
+
+    # Fixing for furnish
+    try:
+        description_copy = fix_furnish(description_copy, listing_data.furnishing.replace("-", " "))
+    except:
+        pass
+    description_copy = re.sub(" +", " ", description_copy).strip()
+    description_copy = description_copy.replace(" rs ", " Rs ")
+
+    if format:
+        description_copy = format_description(description_copy)
+        
+    return description_copy
 
 
 def get_examples(property_type, listing_type):
@@ -275,7 +158,8 @@ def format_listing_data(listing_data):
 
     if 'keywords' in listing_data:
         prompt_string += f"Keywords: {listing_data['keywords']}\n"
-  
+
+    
     if "project" in listing_data:
         prompt_string += f"Project: {listing_data['project']}\n"
 
@@ -297,7 +181,7 @@ def format_listing_data(listing_data):
     if "bathrooms" in listing_data:
         if listing_data["bathrooms"] != 0:
             prompt_string += f"Bathrooms: {listing_data['bathrooms']}\n"
-        
+    
     if "pantry" in listing_data:
         prompt_string += f"Pantry: {listing_data['pantry']}\n"
     
@@ -327,18 +211,20 @@ def format_listing_data(listing_data):
     
     if "floor_number" in listing_data:
         if listing_data["floor_number"] != 0:
-            prompt_string += f"Floor Number: {listing_data['floor_number']}\n"       
-            
+            prompt_string += f"Floor number: {listing_data['floor_number']}\n"
+        
     if "total_floor_count" in listing_data:
         if listing_data["total_floor_count"] != 0:
             prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
-        
+
     if "amenities" in listing_data:
         prompt_string += f"Amenities: {listing_data['amenities']}\n"
 
     if "description" in listing_data:
         prompt_string += f"Description: {listing_data['description']}\n"
+
     return prompt_string
+
 
 def create_prompt(listing_form_data):
     """
@@ -354,7 +240,6 @@ def create_prompt(listing_form_data):
 
     prompt_string += format_listing_data(listing_data)
     prompt_string += 'Description:'
-    print(prompt_string)
     return prompt_string
 
 
