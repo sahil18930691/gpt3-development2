@@ -47,7 +47,7 @@ async def generate_description(listing_data, format=False):
         3. If description is acceptable then return it.
         4. If it is not acceptable. Repeat steps 1-3 certain number of times before giving up.
     """
-    print(listing_data)
+    
     listing_data_dict = dict(listing_data)
     keywords = []
     for key, vals in listing_data_dict.items():
@@ -125,7 +125,9 @@ async def generate_description(listing_data, format=False):
 
     if format:
         description_copy = format_description(description_copy)
-        
+
+    logger.info(listing_data)   
+    logger.info(description_copy)    
     return description_copy
 
 
