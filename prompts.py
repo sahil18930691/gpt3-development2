@@ -217,14 +217,15 @@ def format_listing_data(listing_data):
         
     if "total_floor_count" in listing_data:
         if listing_data["total_floor_count"] != 0:
-            prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
+            prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"    
 
     if "amenities" in listing_data:
         prompt_string += f"Amenities: {listing_data['amenities']}\n"
 
     if "description" in listing_data:
         prompt_string += f"Description: {listing_data['description']}\n"
-
+    
+    print(prompt_string)
     return prompt_string
 
 
@@ -242,6 +243,7 @@ def create_prompt(listing_form_data):
 
     prompt_string += format_listing_data(listing_data)
     prompt_string += 'Description:'
+    print(prompt_string)
     return prompt_string
 
 
