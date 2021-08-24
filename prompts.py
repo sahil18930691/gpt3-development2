@@ -244,7 +244,7 @@ def create_prompt(listing_form_data):
     prompt_string += format_listing_data(listing_data)
     prompt_string += 'Description:'
     print(prompt_string)
-    return prompt_string
+    return prompt
 
 
 def format_description(description):
