@@ -13,7 +13,8 @@ from text_processing import get_tokens,\
                             encode_description_to_preserve_some_tokens,\
                             remove_encodings,\
                             fix_description,\
-                            fix_furnish
+                            fix_furnish, fix_furnish_2,\
+                            FURNISH_TOKEN
 
 
 TOKEN_COVERAGE_THRESHOLD = 0.40
@@ -47,7 +48,7 @@ async def generate_description(listing_data, format=False):
         3. If description is acceptable then return it.
         4. If it is not acceptable. Repeat steps 1-3 certain number of times before giving up.
     """
-    
+
     listing_data_dict = dict(listing_data)
     keywords = []
     for key, vals in listing_data_dict.items():
@@ -85,8 +86,6 @@ async def generate_description(listing_data, format=False):
         logger.info("========>> Best description for failed prompt: \n"+str(description))
         raise HTTPException(status_code=500, detail="Could not generate the description for the given input.")
 
-    # if format:
-    #     description = format_description(description)
 
     description_copy = description
     try:
@@ -100,7 +99,7 @@ async def generate_description(listing_data, format=False):
         description_copy = description_copy.replace("-", " ")
         description_copy = remove_encodings(description_copy)
         description_copy = description_copy.replace("bhk", " bhk")\
-                                            .replace(" rs.", " rs ")
+                                            .replace(" rs.", " Rs ")
     except:
         pass
 
@@ -116,18 +115,38 @@ async def generate_description(listing_data, format=False):
         pass
 
     # Fixing for furnish
+    # try:
+    #     description_copy = fix_furnish(description_copy, listing_data.furnishing.replace("-", " "))
+    # except:
+    #     pass
+    description_copy_before_furnish = description_copy
     try:
-        description_copy = fix_furnish(description_copy, listing_data.furnishing.replace("-", " "))
-    except:
-        pass
+        # print(listing_data.furnishing)
+        description_copy = re.sub(" +", " ", description_copy)
+        modified = True
+        cnt = 0
+        # print("Before furnish fix", description_copy)
+        while modified and cnt < 5:
+            cnt += 1
+            description_copy, modified = fix_furnish_2(description_copy)
+
+        replace_val = listing_data.furnishing
+        if replace_val == "furnished":
+            replace_val = "well furnished"
+        description_copy = description_copy.replace(" furnished ", FURNISH_TOKEN)\
+                                            .replace(FURNISH_TOKEN, replace_val)\
+                                            .replace("_", "")
+    except Exception as e:
+        description_copy = description_copy_before_furnish
+        print("Furnish Exception ", e)
+
     description_copy = re.sub(" +", " ", description_copy).strip()
     description_copy = description_copy.replace(" rs ", " Rs ")
 
     if format:
         description_copy = format_description(description_copy)
-
-    logger.info(listing_data)   
-    logger.info(description_copy)    
+    logger.info(dict(listing_data))
+    logger.info(description_copy)
     return description_copy
 
 
@@ -217,15 +236,14 @@ def format_listing_data(listing_data):
         
     if "total_floor_count" in listing_data:
         if listing_data["total_floor_count"] != 0:
-            prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"    
+            prompt_string += f"Total Floor Count: {listing_data['total_floor_count']}\n"
 
     if "amenities" in listing_data:
         prompt_string += f"Amenities: {listing_data['amenities']}\n"
 
     if "description" in listing_data:
         prompt_string += f"Description: {listing_data['description']}\n"
-    
-    print(prompt_string)
+
     return prompt_string
 
 
@@ -243,8 +261,6 @@ def create_prompt(listing_form_data):
 
     prompt_string += format_listing_data(listing_data)
     prompt_string += 'Description:'
-    
-    print(prompt_string)
     return prompt_string
 
 

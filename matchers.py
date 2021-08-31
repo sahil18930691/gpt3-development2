@@ -32,3 +32,12 @@ specialCharMatcher.add("plus", [[{"LOWER":"+"}]])
 
 character_replacements = {"-": "__minus__", "+":"__plus__"}
 inverse_character_replacements = {"__minus__": "-", "__plus__":"+"}
+
+furnishMatcher = Matcher(nlp.vocab)
+furnishMatcher.add("furnish", [[{"LOWER":"unfurnish"}], [{"LOWER":"unfurnished"}], [{"LOWER":"un"}, {"LOWER":"furnish"}], \
+                        [{"LOWER":"un"}, {"LOWER":"furnished"}] , [{"LOWER":"not"}, {"LOWER":"furnish"}], [{"LOWER":"not"}, {"LOWER":"furnished"}], \
+                        [{"LOWER":"semi"}, {"LOWER":"furnish"}], [{"LOWER":"semi"}, {"LOWER":"furnished"}], \
+                        [ {"LOWER":"semifurnish"}], [ {"LOWER":"semifurnished"}], [{"LOWER":"fully", "LOWER":"furnish"}], [{"LOWER":"fully", "LOWER":"furnished"}],\
+                        [{"LOWER":"well"}, {"LOWER":"furnish"}], [{"LOWER":"well"}, {"LOWER":"furnished"}]])
+
+

@@ -10,6 +10,7 @@ from models.property_types import (
     CommercialListingData
 )
 
+from utils import logger
 
 app = FastAPI(
     title="Minite GPT3",
