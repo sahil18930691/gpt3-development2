@@ -9,12 +9,14 @@ from nltk.stem import PorterStemmer
 from matchers import nlp, matcher, specialMatcher, \
                      specialCharMatcher, numberMatcher, \
                      character_replacements, \
-                     inverse_character_replacements
+                     inverse_character_replacements, \
+                     furnishMatcher
 
 from utils import logger
 
 UNIQUE_TOKEN_THRESHOLD = 0.43
 TOKEN_THRESHOLD = 15
+FURNISH_TOKEN = "__SPECIALTOKEN__"
 
 ps = PorterStemmer()
 inflect_engine = inflect.engine()
@@ -325,7 +327,7 @@ def fix_description(description, listing_data):
                         replace_end_ = replace_start_ + (inner_span.end_char - inner_span.start_char + 1)
                         try:
                             if int(inner_span.text) != listing_data.total_floor_count:
-                                description = " ".join([description[:replace_start_], str(listing_data.total_floor_count), description[replace_end_:]])
+                                description = " ".join([description[:replace_start_], str(int(listing_data.floor_number + 2)), description[replace_end_:]])
                                 return description, True
                         except Exception as e:
                             print(e)
@@ -420,3 +422,34 @@ def fix_furnish(description, furnishing_val):
     
     return description
 
+
+def fix_furnish_2(description):
+    """
+    The function that tries to fix the furnishing information using simple conditions and rules.
+    """
+    doc = nlp(description)
+    matches = furnishMatcher(doc)
+    tmp_token = FURNISH_TOKEN
+    for match_id, start, end in matches:
+        try:
+            matched_span = doc[start:end]
+            replace_start_ = matched_span.start_char
+            replace_end_ = replace_start_ + len(matched_span.text)
+            new_ = description.replace(matched_span.text, tmp_token)
+            print("Furnish *******", new_)
+            return new_, True
+        except Exception as e:
+            print("Furnish Exception")
+            print(e)
+    
+    return description, False
+
+
+if __name__ == "__main__":
+    modified = True
+    cnt = 0
+    description_copy = "This is a very good builder floor for sale at an affordable price of rs 9,99,00,000. The property is located in sector 46 in gurgaon which is a prime location in delhi and is close to public transportation. The property is fully furnished and it has 2 bedrooms, 3 bathrooms and 2 parking slots. The property is 2-4 years old and is in an area of 1400 square feet. There are numerous amenities available here including a jogging cum cycling track, power backup, visitors’ parking, power backup and more."
+    while modified and cnt < 3:
+        cnt += 1
+        description_copy, modified  = fix_furnish_2(description_copy)
+        print(modified)
