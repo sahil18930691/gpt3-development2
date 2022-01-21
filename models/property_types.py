@@ -6,7 +6,6 @@ from pydantic import BaseModel
 
 
 class PropertyType(str, Enum):
-    id = 'id'
     apartment = 'apartment'
     builder_floor = 'builder_floor'
     land = 'land'
@@ -53,6 +52,7 @@ class LandPropertyType(str, Enum):
 
 
 class BaseListingData(BaseModel):
+    id_type = int
     property_type: PropertyType
     listing_type: ListingType
     keywords: Optional[str]
