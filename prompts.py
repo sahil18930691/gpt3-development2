@@ -142,6 +142,13 @@ async def generate_description(listing_data, format=False):
 
     description_copy = re.sub(" +", " ", description_copy).strip()
     description_copy = description_copy.replace(" rs ", " Rs ")
+    
+    if listing_data.id = 1:
+        return description_copy = description_copy.replace(" rs ", " Rs ")
+    elif listing_data.id = 2:
+        return description_copy = description_copy.replace(" rs ", " uae ")
+    
+    
 
     if format:
         description_copy = format_description(description_copy)
