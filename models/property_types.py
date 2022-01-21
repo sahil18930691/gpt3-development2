@@ -52,7 +52,6 @@ class LandPropertyType(str, Enum):
 
 
 class BaseListingData(BaseModel):
-    id_type = int
     property_type: PropertyType
     listing_type: ListingType
     keywords: Optional[str]
