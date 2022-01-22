@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from prompts import generate_description
+from prompts import generate_description1
 from models.property_types import (
     ResidentialListingData,
     LandListingData,
