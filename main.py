@@ -54,7 +54,40 @@ async def generate_land_description(commercial_listing_data: CommercialListingDa
     Generates descriptions for commercial property types
     """
     return await generate_description(commercial_listing_data, format=format)
+    
+    
+#for dubai
 
+@app.post('/residential_descriptions_dubai')
+async def generate_apartment_description_dubai(residential_listing_data: ResidentialListingData, format: bool = False):
+    """
+    Generates descriptions for residential property types
+    """
+    return await generate_description1(residential_listing_data, format=format)
+
+
+@app.post('/land_descriptions_dubai')
+async def land_description_dubai(land_listing_data: LandListingData, format: bool = False):
+    """
+    Generates descriptions for land property types
+    """
+    return await generate_description1(land_listing_data, format=format)
+
+
+@app.post('/office_space_descriptions_dubai')
+async def office_space_description_dubai(office_space_data: OfficeSpaceListingData, format: bool = False):
+    """
+    Generates descriptions for office space property types
+    """
+    return await generate_description1(office_space_data, format=format)
+
+
+@app.post('/commercial_descriptions_dubai')
+async def generate_land_description_dubai(commercial_listing_data: CommercialListingData, format: bool = False):
+    """
+    Generates descriptions for commercial property types
+    """
+    return await generate_description1(commercial_listing_data, format=format)
 
 @app.get('/access_logs')
 async def get_gunicorn_access_logs():

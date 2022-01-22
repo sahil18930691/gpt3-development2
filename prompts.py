@@ -152,6 +152,121 @@ async def generate_description(listing_data, format=False):
     logger.info(description_copy)
     return description_copy
 
+#for dubai
+
+async def generate_description1(listing_data, format=False):
+    """
+    Generates a description for any type of BaseListingData.
+    Steps:
+        1. Hit the API
+        2. Find best description from returned description using scoring.
+        3. If description is acceptable then return it.
+        4. If it is not acceptable. Repeat steps 1-3 certain number of times before giving up.
+    """
+
+    listing_data_dict = dict(listing_data)
+    keywords = []
+    for key, vals in listing_data_dict.items():
+        token_list = get_tokens(vals)
+        keywords.extend(token_list)
+
+    payload = dict(BASE_PAYLOAD)
+    payload['prompt'] = create_prompt(listing_data)
+    
+    data = await hit_gpt_api(payload)
+    description_scores, data = get_scores(data, set(keywords))
+    # for i in range(len(description_scores)):
+    #     print(data["choices"][description_scores[i][2]]["text"])
+    #     print(description_scores[i][0], description_scores[i][1])
+    #     print("--xx--")
+    description = None
+
+    description, correct_description_found, unique_token_score, token_coverage_score = get_best_description(data, description_scores)
+
+    # Again hit the GPT-3 API in case we don't get a satisfactory description.
+    hit_iterations = 1
+    while hit_iterations < API_HIT_ITERATIONS_THRESHOLD and correct_description_found == False:
+        new_data = await hit_gpt_api(payload)
+
+        for new_description in new_data['choices']:
+            data['choices'].append(new_description)
+        description_scores, data = get_scores(data, set(keywords))
+
+        description, correct_description_found, unique_token_score, token_coverage_score = get_best_description(data, description_scores)
+        hit_iterations += 1
+
+    # Return error if we API is unable to find description.
+    if correct_description_found == False and token_coverage_score < TOKEN_COVERAGE_THRESHOLD:
+        logger.info("-------->>  Failed for prompt: \n"+str(payload['prompt']))
+        logger.info("========>> Best description for failed prompt: \n"+str(description))
+        raise HTTPException(status_code=500, detail="Could not generate the description for the given input.")
+
+
+    description_copy = description
+    try:
+        cnt = 0
+        modified = True
+        while modified and cnt < FIXING_ITERATIONS:
+            cnt += 1
+            description_copy = re.sub(" +", " ", description_copy)
+            description_copy, modified = encode_description_to_preserve_some_tokens(description_copy)
+        
+        description_copy = description_copy.replace("-", " ")
+        description_copy = remove_encodings(description_copy)
+        description_copy = description_copy.replace("bhk", " bhk")\
+                                            .replace(" rs.", " Rs ")
+    except:
+        pass
+
+    try:
+        description_copy = re.sub(" +", " ", description_copy)
+        modified = True
+        cnt = 0
+        print(description_copy)
+        while modified and cnt < FIXING_ITERATIONS:
+            cnt += 1
+            description_copy, modified = fix_description(description_copy, listing_data)
+    except:
+        pass
+
+    # Fixing for furnish
+    # try:
+    #     description_copy = fix_furnish(description_copy, listing_data.furnishing.replace("-", " "))
+    # except:
+    #     pass
+    description_copy_before_furnish = description_copy
+    try:
+        # print(listing_data.furnishing)
+        description_copy = re.sub(" +", " ", description_copy)
+        modified = True
+        cnt = 0
+        # print("Before furnish fix", description_copy)
+        while modified and cnt < 5:
+            cnt += 1
+            description_copy, modified = fix_furnish_2(description_copy)
+
+        replace_val = listing_data.furnishing
+        if replace_val == "furnished":
+            replace_val = "well furnished"
+        description_copy = description_copy.replace(" furnished ", FURNISH_TOKEN)\
+                                            .replace(FURNISH_TOKEN, replace_val)\
+                                            .replace("_", "")
+    except Exception as e:
+        description_copy = description_copy_before_furnish
+        print("Furnish Exception ", e)
+
+    description_copy = re.sub(" +", " ", description_copy).strip()
+    description_copy = description_copy.replace(" Rs ", " AED ")
+    description_copy = description_copy.replace(" rs ", " AED ")
+    
+    
+    
+
+    if format:
+        description_copy = format_description(description_copy)
+    logger.info(dict(listing_data))
+    logger.info(description_copy)
+    return description_copy
 
 def get_examples(property_type, listing_type):
     """
