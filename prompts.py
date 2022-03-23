@@ -316,6 +316,21 @@ def format_listing_data(listing_data):
 
     if "bedrooms" in listing_data:
         prompt_string += f"Bedrooms: {listing_data['bedrooms']}\n"
+        
+    if "available_for" in listing_data:
+        prompt_string += f"Available for: {listing_data['available_for']}\n"
+
+    if "project" in listing_data:
+        prompt_string += f"Project: {listing_data['project']}\n"  
+
+    if "suited_for" in listing_data:
+        prompt_string += f"Suited for: {listing_data['suited_for']}\n" 
+
+    if "room_type" in listing_data:
+        prompt_string += f"Room type: {listing_data['room_type']}\n" 
+
+    if "food_charges_included" in listing_data:
+        prompt_string += f"food chargesincluded: {listing_data['food_charges_included']}\n" 
 
     if "bathrooms" in listing_data:
         if listing_data["bathrooms"] != 0:

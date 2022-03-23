@@ -8,7 +8,8 @@ from models.property_types import (
     ResidentialListingData,
     LandListingData,
     OfficeSpaceListingData,
-    CommercialListingData
+    CommercialListingData,
+    PayingGuestListingData
 )
 
 from utils import logger
@@ -23,6 +24,14 @@ app = FastAPI(
 @app.get("/")
 async def root():
     return "Hello World!!"
+
+
+@app.post('/payingguest_descriptions')
+async def generate_payingguest_description(payingguest_listing_data: PayingGuestListingData, format: bool = False):
+    """
+    Generates descriptions for residential property types
+    """
+    return await generate_description(payingguest_listing_data, format=format)
 
 
 @app.post('/residential_descriptions')

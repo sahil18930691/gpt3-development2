@@ -19,6 +19,7 @@ class PropertyType(str, Enum):
     shop = 'shop'
     showroom = 'showroom'
     warehouse = 'warehouse'
+    pg = 'pg'
 
 
 class ListingType(str, Enum):
@@ -32,6 +33,10 @@ class ResidentialPropertyType(str, Enum):
     penthouse = 'penthouse'
     villa = 'villa'
     independent_house = 'independent_house'
+
+
+class PayingGuestPropertyType(str,Enum):
+    pg = 'pg'
 
 
 class OfficeSpacePropertyType(str, Enum):
@@ -74,6 +79,14 @@ class ResidentialListingData(BaseListingData):
     property_age: Optional[str]
     floor_number: Optional[int]
     total_floor_count: Optional[int]
+
+class PayingGuestListingData(BaseListingData):
+    property_type: PayingGuestPropertyType
+    project: str
+    suited_for: str
+    room_type: str
+    food_charges_included: str
+    available_for: str
 
 
 class LandListingData(BaseListingData):
