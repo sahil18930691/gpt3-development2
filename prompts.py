@@ -258,7 +258,7 @@ async def generate_description1(listing_data, format=False):
     description_copy = re.sub(" +", " ", description_copy).strip()
     description_copy = description_copy.replace(" Rs ", " AED ")
     description_copy = description_copy.replace(" rs ", " AED ")
-    description_copy = description_copy.replace(" rs ", " AED ")
+    description_copy = description_copy.replace(" aed ", " AED ")
     
     
     
