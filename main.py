@@ -73,7 +73,11 @@ async def generate_apartment_description_dubai(residential_listing_data: Residen
     """
     Generates descriptions for residential property types
     """
-    return await generate_description1(residential_listing_data, format=format)
+
+    if len(residential_listing_data.locality) and len(residential_listing_data.city) >= 2:
+        return await generate_description1(residential_listing_data, format=format)
+    else:
+        return("Error please fill city and locality")
 
 
 @app.post('/land_descriptions_dubai')
@@ -81,7 +85,12 @@ async def land_description_dubai(land_listing_data: LandListingData, format: boo
     """
     Generates descriptions for land property types
     """
-    return await generate_description1(land_listing_data, format=format)
+    if len(land_listing_data.locality) and len(land_listing_data.city) >= 2:
+        return await generate_description1(land_listing_data, format=format)
+    else:
+        return("Error please fill city and locality")
+
+    
 
 
 @app.post('/office_space_descriptions_dubai')
@@ -89,7 +98,12 @@ async def office_space_description_dubai(office_space_data: OfficeSpaceListingDa
     """
     Generates descriptions for office space property types
     """
-    return await generate_description1(office_space_data, format=format)
+    if len(office_space_data.locality) and len(office_space_data.city) >=2:
+        return await generate_description1(office_space_data, format=format)
+    else:
+        return("Error please fill city and locality")
+
+    
 
 
 @app.post('/commercial_descriptions_dubai')
@@ -97,8 +111,12 @@ async def generate_land_description_dubai(commercial_listing_data: CommercialLis
     """
     Generates descriptions for commercial property types
     """
-    return await generate_description1(commercial_listing_data, format=format)
+    if len(commercial_listing_data.locality) and len(commercial_listing_data.city) >=2:
+        return await generate_description1(commercial_listing_data, format=format)
+    else:
+        return("Error please fill city and locality")
 
+        
 @app.get('/access_logs')
 async def get_gunicorn_access_logs():
     path = os.path.join(os.getcwd(), 'gunicorn-access.log')

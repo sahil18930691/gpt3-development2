@@ -25,6 +25,8 @@ class PropertyType(str, Enum):
 class ListingType(str, Enum):
     sale = 'sale'
     rent = 'rent'
+    dubai_sale = 'dubai_sale'
+    dubai_rent = 'dubai_rent'
 
 
 class ResidentialPropertyType(str, Enum):
