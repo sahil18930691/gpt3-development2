@@ -268,7 +268,7 @@ async def generate_description1(listing_data, format=False):
     logger.info(dict(listing_data))
     logger.info(description_copy)
     return description_copy
-
+'''
 def get_examples(property_type, listing_type):
     """
     Get all the examples from the JSON file for the specified
@@ -286,7 +286,46 @@ def get_examples(property_type, listing_type):
     with open(json_path, 'rb') as json_file:
         examples = json.loads(json_file.read())
     return examples
+'''
 
+def get_examples(property_type, listing_type):
+    """
+    Get all the examples from the JSON file for the specified
+    property_type and listing_type
+    """
+    generate_random_numbers = random.randint(3, 3)
+    if os.path.isfile(f'prompts/{property_type}.json'):
+        json_path = f'prompts/{property_type}.json'
+
+    elif property_type == "apartment" and listing_type == "apartment_sale" or "apartment_rent":
+        print(property_type,listing_type)
+        if generate_random_numbers == 1:
+            print("generate_random_numbers",generate_random_numbers)
+            os.path.isfile(f'prompts/{property_type}_{listing_type}.json')
+            json_path = f'prompts/{property_type}_{listing_type}.json'
+            print(json_path)
+
+        elif generate_random_numbers == 2:
+                print("generate_random_numbers",generate_random_numbers)
+                os.path.isfile(f'prompts/{property_type}_{listing_type}1.json')
+                json_path = f'prompts/{property_type}_{listing_type}1.json'
+
+        elif generate_random_numbers == 3:
+                print("generate_random_numbers",generate_random_numbers)
+                os.path.isfile(f'prompts/{property_type}_{listing_type}2.json')
+                json_path = f'prompts/{property_type}_{listing_type}2.json'
+
+    elif os.path.isfile(f'prompts/{property_type}_{listing_type}.json'):
+        json_path = f'prompts/{property_type}_{listing_type}.json'     
+
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Listing of {listing_type} with {property_type} is not supported"
+        )
+    with open(json_path, 'rb') as json_file:
+        examples = json.loads(json_file.read())
+    return examples
 
 def format_listing_data(listing_data):
     """
