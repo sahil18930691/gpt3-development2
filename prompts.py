@@ -299,20 +299,20 @@ def get_examples(property_type, listing_type):
         json_path = f'prompts/{property_type}.json'
 
     elif property_type == "apartment" and listing_type == "apartment_sale" or "apartment_rent":
-        print(property_type,listing_type)
+        logger.info(print(property_type,listing_type))
         if generate_random_numbers == 1:
-            print("generate_random_numbers",generate_random_numbers)
+            logger.info(print("generate_random_numbers",generate_random_numbers))
             os.path.isfile(f'prompts/{property_type}_{listing_type}.json')
             json_path = f'prompts/{property_type}_{listing_type}.json'
             print(json_path)
 
         elif generate_random_numbers == 2:
-                print("generate_random_numbers",generate_random_numbers)
+                logger.info(print("generate_random_numbers",generate_random_numbers))
                 os.path.isfile(f'prompts/{property_type}_{listing_type}1.json')
                 json_path = f'prompts/{property_type}_{listing_type}1.json'
 
         elif generate_random_numbers == 3:
-                print("generate_random_numbers",generate_random_numbers)
+                logger.info(print("generate_random_numbers",generate_random_numbers))
                 os.path.isfile(f'prompts/{property_type}_{listing_type}2.json')
                 json_path = f'prompts/{property_type}_{listing_type}2.json'
 
