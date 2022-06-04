@@ -2,6 +2,7 @@
 import os
 import re
 import json
+import random
 
 from fastapi import HTTPException
 from babel.numbers import format_currency
