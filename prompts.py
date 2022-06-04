@@ -269,7 +269,7 @@ async def generate_description1(listing_data, format=False):
     logger.info(dict(listing_data))
     logger.info(description_copy)
     return description_copy
-    
+
 '''
 def get_examples(property_type, listing_type):
     """
@@ -295,7 +295,7 @@ def get_examples(property_type, listing_type):
     Get all the examples from the JSON file for the specified
     property_type and listing_type
     """
-    generate_random_numbers = random.randint(3, 3)
+    generate_random_numbers = random.randint(1, 3)
     logger.info(generate_random_numbers)
     if os.path.isfile(f'prompts/{property_type}.json'):
         json_path = f'prompts/{property_type}.json'
