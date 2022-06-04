@@ -300,7 +300,7 @@ def get_examples(property_type, listing_type):
     if os.path.isfile(f'prompts/{property_type}.json'):
         json_path = f'prompts/{property_type}.json'
 
-    elif property_type.value == "apartment" and (listing_type.value in ("sale" or "rent")):
+    elif property_type.value == "apartment" and (listing_type.value =="sale" or listing_type.value == "rent"):
         logger.info(property_type)
         logger.info(listing_type)
         if generate_random_numbers == 1:
