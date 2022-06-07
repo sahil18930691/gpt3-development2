@@ -30,7 +30,7 @@ NUM_EXAMPLES = 2
 
 # GPT-3 payload.
 BASE_PAYLOAD = {
-    "max_tokens": 300,
+    "max_tokens": 200,
     "temperature": 0.5,
     "top_p": 0.8,
     "n": NUM_EXAMPLES,
